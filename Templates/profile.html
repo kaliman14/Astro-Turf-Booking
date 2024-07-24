@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Profile</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            {% if session.get('is_admin') == 'True' %}
+                <a href="{{ url_for('admin') }}">Admin</a>
+            {% else %}
+                {% if session.get('username') %}
+                    <a href="{{ url_for('booking') }}">Book</a>
+                    <div class="dropdown">
+                        <button class="dropbtn">{{ session.get('username') }} ▼</button>
+                        <div class="dropdown-content">
+                            <a href="{{ url_for('profile') }}">Profile</a>
+                            <a href="{{ url_for('booking_history') }}">Booking History</a>
+                            <a href="{{ url_for('logout') }}">Logout</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+            {% endif %}
+        </nav>
+    </header>
+    <main class="login-container">
+        <h1>Profile</h1>
+        <div>
+            <p><strong>Username:</strong> {{ user[1] }}</p>
+            <p><strong>Email:</strong> {{ user[2] }}</p>
+            <p><strong>Phone:</strong> {{ user[4] }}</p>
+        </div>
+    </main>
+    <footer>
+        <p>Contact us: info@footballturf.com</p>
+    </footer>
+</body>
+</html>

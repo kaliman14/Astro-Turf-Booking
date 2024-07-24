@@ -1,0 +1,53 @@
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+     <h1>Welcome to Kotei Astro Turf</h1>
+    <section id="hero">
+        <div class="hero-content">
+            <p>Book your turf online with ease!</p>
+            {% if session.get("username") %}
+                <a href="{{ url_for('booking') }}" class="btn btn-primary">Book Now</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-primary">Login To Book A Spot</a>
+            {% endif %}
+        </div>
+    </section>
+
+    <section id="features">
+        <div class="container">
+            <div class="feature-item">
+                <img src="{{ url_for('static', filename='pexels-anastasia-shuraeva-9519543.jpg') }}" alt="Feature 1">
+                <h3>Convenient Booking</h3>
+                <p>Book your turf online anytime, anywhere.</p>
+            </div>
+            <div class="feature-item">
+                <img src="{{ url_for('static', filename='pexels-gabby-k-5849577.jpg') }}" alt="Feature 2">
+                <h3>Flexible Payment Options</h3>
+                <p>Secure and flexible payment methods available.</p>
+            </div>
+            <div class="feature-item">
+                <img src="{{ url_for('static', filename='pexels-lucasallmann-1378425.jpg') }}" alt="image 1">
+                <h3>Great Facilities</h3>
+                <p>Enjoy state-of-the-art facilities for your games.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <h2>About Us</h2>
+            <p>We are dedicated to providing the best turf booking experience for football enthusiasts. Our platform allows you to easily book turfs, manage bookings, and enjoy a seamless experience.</p>
+        </div>
+    </section>
+{% endblock %}
+
+<!-- Add the following CSS to home.css or your main CSS file -->
+<style>
+    .full-screen-section {
+        height: 100vh; /* Ensure sections take up full viewport height */
+        /* Add additional styles as needed */
+    }
+</style>

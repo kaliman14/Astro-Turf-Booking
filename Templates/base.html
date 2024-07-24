@@ -1,0 +1,42 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Home{% endblock %} - Kotei Astro Turf</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Kotei Astro Turf</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            {% if session.get('is_admin') == 'True' %}
+                <a href="{{ url_for('admin') }}">Admin</a>
+            {% else %}
+            {% if session.get('username') %}
+                <a href="{{ url_for('booking') }}">Book</a>
+            {% endif %}               
+            {% endif %}
+            {% if session.get('username') %}
+                <div class="profile-menu">
+                    <img src="{{ url_for('static', filename='profile-placeholder.png') }}" alt="Profile" class="profile-img">
+                    <div class="profile-dropdown">
+                        <a href="{{ url_for('profile') }}">Profile Details</a>
+                        <a href="{{ url_for('booking_history') }}">Booking History</a>
+                        <a href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('register') }}">Register</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

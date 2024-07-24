@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Register</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            {% if session.get('is_admin') == 'True' %}
+                <a href="{{ url_for('admin') }}">Admin</a>
+            {% else %}
+            {% if session.get('username') %}
+                <a href="{{ url_for('booking') }}">Book</a>
+            {% endif %}               
+            {% endif %}
+            {% if session.get('username') %}
+                <a href="{{ url_for('logout') }}">Logout ({{ session.get('username') }})</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('register') }}">Register</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main class="login-container">
+        <h1>Register</h1>
+        <form action="{{ url_for('register') }}" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="Phone">Phone:</label>
+            <input type="tel" id="Phone" name="Phone" required>
+
+            <button type="submit">Register</button>
+        </form>
+    </main>
+    <footer>
+        <p>Contact us: info@footballturf.com</p>
+    </footer>
+</body>
+</html>
