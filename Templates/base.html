@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>
-        <h1>Kotei Astro Turf</h1>
+        <h1>Football Astro Turf</h1>
         <nav>
             <a href="{{ url_for('home') }}">Home</a>
             {% if session.get('is_admin') == 'True' %}
@@ -21,7 +21,7 @@
             {% endif %}
             {% if session.get('username') %}
                 <div class="profile-menu">
-                    <img src="{{ url_for('static', filename='profile-placeholder.png') }}" alt="Profile" class="profile-img">
+                    <img src="{{ url_for('static', filename='avatar.jpg') }}" alt="Profile" class="profile-img">
                     <div class="profile-dropdown">
                         <a href="{{ url_for('profile') }}">Profile Details</a>
                         <a href="{{ url_for('booking_history') }}">Booking History</a>

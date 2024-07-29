@@ -1,9 +1,29 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+import psycopg2
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.secret_key = 'your_secret_key_here'
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@localhost/yourdatabase'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+class Booking(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    turf_id = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    start_time = db.Column(db.Time, nullable=False)
+    end_time = db.Column(db.Time, nullable=False)
+
+    def __repr__(self):
+        return f'<Booking {self.id}>'
+
 
 def init_db():
     conn = sqlite3.connect('database.db')
@@ -12,10 +32,10 @@ def init_db():
         CREATE TABLE IF NOT EXISTS bookings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
-            email TEXT,
             phone TEXT,
             date TEXT,
-            time TEXT
+            time TEXT,
+            cost INTEGER
         )
     ''')
     cursor.execute('''
@@ -59,45 +79,54 @@ def init_timeslots():
 def home():
     return render_template('home.html')
 
-@app.route('/booking', methods=['GET', 'POST'])
-def booking():
-    
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-
+@app.route('/book', methods=['GET', 'POST'])
+def book():
     if request.method == 'POST':
-        username = request.form['username']
-        phone = request.form['Phone']
+        user_id = request.form['user_id']
+        turf_id = request.form['turf_id']
         date = request.form['date']
-        time = request.form['time']
+        start_time = request.form['start_time']
+        end_time = request.form['end_time']
 
-        cursor.execute('''
-            SELECT is_available FROM timeslots
-            WHERE date = ? AND time = ?
-        ''', (date, time))
-        timeslot = cursor.fetchone()
+        # Convert date and times to datetime objects for validation
+        try:
+            booking_date = datetime.strptime(date, '%Y-%m-%d').date()
+            booking_start_time = datetime.strptime(start_time, '%H:%M').time()
+            booking_end_time = datetime.strptime(end_time, '%H:%M').time()
+        except ValueError as e:
+            return jsonify({'error': 'Invalid date or time format'}), 400
 
-        if timeslot and timeslot[0]:
-            cursor.execute('''
-                INSERT INTO bookings (name, phone, date, time)
-                VALUES (?, ?, ?, ?)
-            ''', (username, phone, date, time))
-            
-            cursor.execute('''
-                UPDATE timeslots SET is_available = 0
-                WHERE date = ? AND time = ?
-            ''', (date, time))
-            conn.commit()
-            conn.close()
-            return redirect(url_for('home'))
-        else:
-            flash('Selected time slot is not available.')
-            return redirect(url_for('booking'))
+        # Perform validation and booking logic here
+        if not is_time_slot_available(turf_id, booking_date, booking_start_time, booking_end_time):
+            return jsonify({'error': 'Time slot is already booked'}), 400
 
-    cursor.execute('SELECT * FROM timeslots WHERE is_available = 1')
-    available_slots = cursor.fetchall()
-    conn.close()
-    return render_template('booking.html', available_slots=available_slots)
+        # Save the booking to the database
+        save_booking(user_id, turf_id, booking_date, booking_start_time, booking_end_time)
+
+        return jsonify({'success': 'Booking confirmed'}), 200
+
+    return render_template('book.html')
+
+def is_time_slot_available(turf_id, date, start_time, end_time):
+    overlapping_bookings = Booking.query.filter(
+        Booking.turf_id == turf_id,
+        Booking.date == date,
+        Booking.start_time < end_time,
+        Booking.end_time > start_time
+    ).all()
+
+    return len(overlapping_bookings) == 0
+
+def save_booking(user_id, turf_id, date, start_time, end_time):
+    new_booking = Booking(
+        user_id=user_id,
+        turf_id=turf_id,
+        date=date,
+        start_time=start_time,
+        end_time=end_time
+    )
+    db.session.add(new_booking)
+    db.session.commit()
 
 @app.route('/admin')
 def admin():
@@ -214,9 +243,11 @@ def booking_history():
 
     return render_template('booking_history.html', bookings=bookings)
 
-
+@app.route('/confirmation')
+def confirmation():
+    return render_template('confirmation.html')
 
 if __name__ == '__main__':
     init_db()
     init_timeslots()
-    app.run(debug = True)
+    app.run(debug=True)
