@@ -4,6 +4,15 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
      <h1 style="text-align: center;">Welcome to your Football Astro Turf</h1>
     <section id="hero">
         <div class="hero-content">

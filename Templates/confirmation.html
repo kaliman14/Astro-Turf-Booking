@@ -1,8 +1,27 @@
-{% extends 'base.html' %}
-
-{% block content %}
-<main class="confirmation-container">
-    <h1>Booking Confirmed!</h1>
-    <p>Your slot has been booked successfully.</p>
-</main>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Booking Confirmation</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Thank you for your booking!</h2>
+        <p>Your booking has been confirmed. We look forward to seeing you.</p>
+        <a href="{{ url_for('home') }}">Return to Home</a>
+    </main>
+    <footer>
+        <p>&copy; 2024 Astro Turf Booking</p>
+    </footer>
+</body>
+</html>

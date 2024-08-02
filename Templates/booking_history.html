@@ -14,20 +14,22 @@
             {% if session.get('is_admin') == 'True' %}
                 <a href="{{ url_for('admin') }}">Admin</a>
             {% else %}
-                {% if session.get('username') %}
-                    <a href="{{ url_for('booking') }}">Book</a>
-                    <div class="dropdown">
-                        <button class="dropbtn">{{ session.get('username') }} ▼</button>
-                        <div class="dropdown-content">
-                            <a href="{{ url_for('profile') }}">Profile</a>
-                            <a href="{{ url_for('booking_history') }}">Booking History</a>
-                            <a href="{{ url_for('logout') }}">Logout</a>
-                        </div>
+            {% if session.get('username') %}
+                <a href="{{ url_for('booking') }}">Book</a>
+            {% endif %}               
+            {% endif %}
+            {% if session.get('username') %}
+                <div class="profile-menu">
+                    <img src="{{ url_for('static', filename='avatar.jpg') }}" alt="Profile" class="profile-img">
+                    <div class="profile-dropdown">
+                        <a href="{{ url_for('profile') }}">Profile Details</a>
+                        <a href="{{ url_for('booking_history') }}">Booking History</a>
+                        <a href="{{ url_for('logout') }}">Logout</a>
                     </div>
-                {% else %}
-                    <a href="{{ url_for('login') }}">Login</a>
-                    <a href="{{ url_for('register') }}">Register</a>
-                {% endif %}
+                </div>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('register') }}">Register</a>
             {% endif %}
         </nav>
     </header>
@@ -36,17 +38,23 @@
         <table>
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Phone</th>
+                    <th>User Name</th>
+                    <th>Phone Number</th>
+                    <th>Booked Date</th>
+                    <th>Start Period</th>
+                    <th>End Period</th>
+                    <th>Amount</th>
                 </tr>
             </thead>
             <tbody>
                 {% for booking in bookings %}
                     <tr>
+                        <td>{{ booking[1] }}</td>
+                        <td>{{ booking[2] }}</td>
                         <td>{{ booking[3] }}</td>
                         <td>{{ booking[4] }}</td>
-                        <td>{{ booking[2] }}</td>
+                        <td>{{ booking[5] }}</td>
+                        <td>GH&cent;{{ booking[6] }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -55,5 +63,15 @@
     <footer>
         <p>Contact us: info@footballturf.com</p>
     </footer>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 </body>
 </html>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Home{% endblock %} - Kotei Astro Turf</title>
+    <title>{% block title %}Home{% endblock %} - Astro Turf</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -12,13 +12,14 @@
         <h1>Football Astro Turf</h1>
         <nav>
             <a href="{{ url_for('home') }}">Home</a>
-            {% if session.get('is_admin') == 'True' %}
+            {% if session.get('is_admin') %}
                 <a href="{{ url_for('admin') }}">Admin</a>
             {% else %}
-            {% if session.get('username') %}
+            <!-- {% if session.get('username') %}
                 <a href="{{ url_for('booking') }}">Book</a>
-            {% endif %}               
+            {% endif %}                -->
             {% endif %}
+            <a href="{{ url_for('booking') }}">Book</a>
             {% if session.get('username') %}
                 <div class="profile-menu">
                     <img src="{{ url_for('static', filename='avatar.jpg') }}" alt="Profile" class="profile-img">

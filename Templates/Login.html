@@ -33,7 +33,10 @@
             <input type="text" id="username" name="username" required>
 
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+            <div id="password">
+                <input type="password" name="password" id="pwd" required>
+                <span style="cursor: pointer;" id="sh" onclick="showhide()">show</span>
+            </div>
 
             <button type="submit">Login</button>
         </form>
@@ -41,5 +44,17 @@
     <footer>
         <p>Contact us: info@footballturf.com</p>
     </footer>
+
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
 </body>
 </html>
